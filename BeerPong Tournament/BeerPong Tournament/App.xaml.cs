@@ -1,4 +1,12 @@
-﻿using System;
+﻿using BeerPong_Tournament.DbContexts;
+using BeerPong_Tournament.Navigation;
+using BeerPong_Tournament.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Reservoom.HostBuilders;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -14,14 +22,51 @@ namespace BeerPong_Tournament
     /// </summary>
     public partial class App : Application
     {
-        public MainWindow mainWindow;
-        private void Application_Startup(object sender, StartupEventArgs e)
-        {
-            mainWindow = new();
+        private readonly IHost _host;
 
-            mainWindow.Show();
+        public App()
+        {
+            _host = Host.CreateDefaultBuilder()
+                .AddViewModels()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    string connectionString = hostContext.Configuration.GetConnectionString("Default");
+                    services.AddSingleton(new TournamentDbContextFactory(connectionString));
+
+                    services.AddSingleton<NavigationStore<MainViewModel>>();
+
+                    services.AddSingleton(s => new MainWindow()
+                    {
+                        DataContext = s.GetRequiredService<MainViewModel>()
+                    });
+                })
+                .Build();
         }
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            _host.Start();
+
+            TournamentDbContextFactory reservoomDbContextFactory = _host.Services.GetRequiredService<TournamentDbContextFactory>();
+            using (TournamentDbContext dbContext = reservoomDbContextFactory.CreateDbContext())
+            {
+                dbContext.Database.Migrate();
+            }
+
+            MainWindow = _host.Services.GetRequiredService<MainWindow>();
+            MainWindow.Show();
+
+            base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _host.Dispose();
+
+            base.OnExit(e);
+        }
+
+        #region onError
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             var errorMsg = "An application error occurred with the following information:";
@@ -41,19 +86,20 @@ namespace BeerPong_Tournament
 
             errorMsg = $"{errorMsg}\r\n\r\nYes = Shutdown | No = Restart | Cancel = Ignore";
 
-            MessageBoxResult result = MessageBox.Show(errorMsg, eMessage, MessageBoxButton.YesNoCancel);
+            MessageBoxResult result = MessageBox.Show(errorMsg, "Unhandled Exception", MessageBoxButton.YesNoCancel);
 
-            if (result == MessageBoxResult.Yes) 
+            if (result == MessageBoxResult.Yes)
                 e.Handled = false;
             else if (result == MessageBoxResult.No)
             {
                 e.Handled = true;
-                //Application.Restart();
+                Process.Start(Application.ResourceAssembly.Location);
                 Current.Shutdown();
             }
-            else if (result == MessageBoxResult.Cancel) 
+            else if (result == MessageBoxResult.Cancel)
                 e.Handled = true;
-            
+
         }
+        #endregion
     }
 }
