@@ -1,4 +1,4 @@
-﻿using BeerPong_Tournament.ViewModels;
+﻿using Tournaments.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.ComponentModel;
 
-namespace BeerPong_Tournament.Commands
+namespace Tournaments.Commands
 {
     public abstract class CommandBase : ICommand
     {

@@ -1,12 +1,12 @@
-﻿using BeerPong_Tournament.Navigation;
-using BeerPong_Tournament.ViewModels;
+﻿using Tournaments.Navigation;
+using Tournaments.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BeerPong_Tournament.Commands
+namespace Tournaments.Commands
 {
     public class NavigateCommand<TMaster, TViewModel> : CommandBase where TViewModel : ViewModelBase where TMaster : ViewModelBase
     {

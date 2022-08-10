@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BeerPong_Tournament.DbContexts
+namespace Tournaments.DbContexts
 {
     public class TournamentDesignTimeDbContextFactory : IDesignTimeDbContextFactory<TournamentDbContext>
     {

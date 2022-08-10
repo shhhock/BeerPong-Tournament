@@ -1,6 +1,6 @@
-﻿using BeerPong_Tournament.DbContexts;
-using BeerPong_Tournament.Navigation;
-using BeerPong_Tournament.ViewModels;
+﻿using Tournaments.DbContexts;
+using Tournaments.Navigation;
+using Tournaments.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,11 +15,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace BeerPong_Tournament
+namespace Tournaments
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         private readonly IHost _host;
@@ -27,20 +24,20 @@ namespace BeerPong_Tournament
         public App()
         {
             _host = Host.CreateDefaultBuilder()
-                .AddViewModels()
-                .ConfigureServices((hostContext, services) =>
-                {
-                    string connectionString = hostContext.Configuration.GetConnectionString("Default");
-                    services.AddSingleton(new TournamentDbContextFactory(connectionString));
+                        .AddViewModels()
+                        .ConfigureServices((hostContext, services) =>
+                        {
+                            string connectionString = hostContext.Configuration.GetConnectionString("Default");
+                            services.AddSingleton(new TournamentDbContextFactory(connectionString));
 
-                    services.AddSingleton<NavigationStore<MainViewModel>>();
+                            services.AddSingleton<NavigationStore<MainViewModel>>();
 
-                    services.AddSingleton(s => new MainWindow()
-                    {
-                        DataContext = s.GetRequiredService<MainViewModel>()
-                    });
-                })
-                .Build();
+                            services.AddSingleton(s => new MainWindow()
+                            {
+                                DataContext = s.GetRequiredService<MainViewModel>()
+                            });
+                        })
+                        .Build();
         }
 
         protected override void OnStartup(StartupEventArgs e)

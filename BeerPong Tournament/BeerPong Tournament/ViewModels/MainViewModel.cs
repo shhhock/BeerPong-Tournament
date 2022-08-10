@@ -1,11 +1,11 @@
-﻿using BeerPong_Tournament.Navigation;
+﻿using Tournaments.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BeerPong_Tournament.ViewModels
+namespace Tournaments.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {

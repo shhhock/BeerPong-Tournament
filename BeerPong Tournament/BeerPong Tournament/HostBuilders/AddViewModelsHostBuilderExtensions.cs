@@ -1,4 +1,4 @@
-﻿using BeerPong_Tournament.ViewModels;
+﻿using Tournaments.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
