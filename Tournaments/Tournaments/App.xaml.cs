@@ -43,13 +43,13 @@ namespace Tournaments
         protected override void OnStartup(StartupEventArgs e)
         {
             _host.Start();
-            var prova = 1;
+
             TournamentDbContextFactory reservoomDbContextFactory = _host.Services.GetRequiredService<TournamentDbContextFactory>();
             using (TournamentDbContext dbContext = reservoomDbContextFactory.CreateDbContext())
             {
                 dbContext.Database.Migrate();
             }
-            prova = prova +1;
+
             MainWindow = _host.Services.GetRequiredService<MainWindow>();
             MainWindow.Show();
 
